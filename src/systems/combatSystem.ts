@@ -53,7 +53,8 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
   if (
     !sword.position || !sword.collider ||
     !defender.position || !defender.collider ||
-    !defender.stance || !attacker.stance || !defender.health
+    !defender.stance || !attacker.stance || !defender.health ||
+    !defender.facing || !attacker.facing
   ) {
     return;
   }
@@ -64,6 +65,24 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
   );
 
   if (collision) {
+    // Check if sword hit defender's back
+    const defenderCenter = defender.position.x + defender.collider.w / 2;
+    const swordCenter = sword.position.x + sword.collider.w / 2;
+    
+    // Sword is behind defender if:
+    // - Defender faces right (1) and sword is to the left of defender
+    // - Defender faces left (-1) and sword is to the right of defender
+    const hitFromBehind = 
+      (defender.facing.direction === 1 && swordCenter < defenderCenter) ||
+      (defender.facing.direction === -1 && swordCenter > defenderCenter);
+
+    if (hitFromBehind) {
+      // Back hit is always lethal
+      defender.health.current = 0;
+      console.log(`Player ${attacker.player?.id} backstabbed Player ${defender.player?.id}!`);
+      return;
+    }
+
     // Rock-Paper-Scissors logic: High > Low > Mid > High
     const hit = isStanceAdvantage(attacker.stance.current, defender.stance.current);
     
