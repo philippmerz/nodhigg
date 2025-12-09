@@ -18,6 +18,11 @@ export function updatePhysicsSystem(deltaTime: number): void {
     // Apply horizontal input
     entity.velocity.x = entity.input.x * PHYSICS.MOVE_SPEED;
 
+    // Update facing direction based on movement
+    if (entity.input.x !== 0 && entity.facing) {
+      entity.facing.direction = entity.input.x > 0 ? 1 : -1;
+    }
+
     // Apply gravity
     entity.velocity.y += PHYSICS.GRAVITY;
 
@@ -61,6 +66,9 @@ export function updatePhysicsSystem(deltaTime: number): void {
     const parent = world.entities.find((e) => e.id === swordEntity.sword.parentId);
     if (!parent || !parent.position || !parent.stance) continue;
 
+    // Get facing direction (default to right)
+    const facing = parent.facing?.direction ?? 1;
+
     // Position sword relative to parent and stance
     let yOffset = swordEntity.sword.offset.y;
     
@@ -69,7 +77,8 @@ export function updatePhysicsSystem(deltaTime: number): void {
     if (parent.stance.current === 1) yOffset += 0;  // Mid
     if (parent.stance.current === 2) yOffset -= 15; // High
 
-    swordEntity.position.x = parent.position.x + swordEntity.sword.offset.x;
+    // Position sword on the side player is facing
+    swordEntity.position.x = parent.position.x + (swordEntity.sword.offset.x * facing);
     swordEntity.position.y = parent.position.y + yOffset;
     }
 }

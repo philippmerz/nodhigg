@@ -36,6 +36,9 @@ export function createPlayer(playerId: 1 | 2, x: number, y: number): string {
       current: PLAYER.STARTING_HEALTH,
       max: PLAYER.STARTING_HEALTH,
     },
+    facing: {
+      direction: playerId === 1 ? 1 : -1, // P1 faces right, P2 faces left
+    },
   });
 
   // Create the sword entity attached to the player

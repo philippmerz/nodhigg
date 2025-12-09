@@ -48,6 +48,10 @@ export interface Player {
   id: 1 | 2; // Player 1 or Player 2
 }
 
+export interface Facing {
+  direction: 1 | -1; // 1 = right, -1 = left
+}
+
 // Complete Entity Type
 export type Entity = {
   id: string;
@@ -60,4 +64,5 @@ export type Entity = {
   sprite?: Sprite;
   health?: Health;
   player?: Player;
+  facing?: Facing;
 };
