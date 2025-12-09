@@ -9,8 +9,8 @@ export const PHYSICS = {
 } as const;
 
 export const GAME = {
-  WIDTH: 800,
-  HEIGHT: 600,
+  get WIDTH() { return window.innerWidth; },
+  get HEIGHT() { return window.innerHeight; },
   FIXED_TIMESTEP: 1000 / 60, // 60 FPS
   BACKGROUND_COLOR: 0x2c3e50,
 } as const;
@@ -18,9 +18,9 @@ export const GAME = {
 export const PLAYER = {
   WIDTH: 20,
   HEIGHT: 40,
-  SPAWN_P1_X: 200,
-  SPAWN_P2_X: 600,
-  SPAWN_Y: 300,
+  get SPAWN_P1_X() { return window.innerWidth * 0.25; }, // 25% from left
+  get SPAWN_P2_X() { return window.innerWidth * 0.75; }, // 75% from left
+  get SPAWN_Y() { return window.innerHeight * 0.5; },    // 50% from top
   STARTING_HEALTH: 1,
 } as const;
 
@@ -35,7 +35,7 @@ export const STANCE = {
   LOW: 0,
   MID: 1,
   HIGH: 2,
-  CHANGE_COOLDOWN: 200, // ms
+  CHANGE_COOLDOWN: 50, // ms
 } as const;
 
 export const COLORS = {
@@ -47,6 +47,6 @@ export const COLORS = {
 } as const;
 
 export const LEVEL = {
-  GROUND_Y: 500,
-  GROUND_HEIGHT: 100,
+  get GROUND_Y() { return window.innerHeight * 0.83; },     // 83% down screen
+  get GROUND_HEIGHT() { return window.innerHeight * 0.17; }, // 17% of screen
 } as const;

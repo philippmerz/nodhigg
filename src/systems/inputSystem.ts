@@ -35,7 +35,9 @@ export function updateInputSystem(): void {
       entity.input.attack = keys.has('KeyE');
       entity.input.stanceUp = keys.has('KeyQ');
       entity.input.stanceDown = keys.has('KeyR');
-    } else if (entity.player.id === 2) {
+    }
+    
+    else if (entity.player.id === 2) {
       // Movement
       let x = 0;
       if (keys.has('ArrowLeft')) x -= 1;
@@ -44,9 +46,9 @@ export function updateInputSystem(): void {
 
       // Actions
       entity.input.jump = keys.has('ArrowUp');
-      entity.input.attack = keys.has('Numpad0');
-      entity.input.stanceUp = keys.has('Numpad1');
-      entity.input.stanceDown = keys.has('Numpad2');
+      entity.input.attack = keys.has('Slash');
+      entity.input.stanceUp = keys.has('Comma');
+      entity.input.stanceDown = keys.has('Period');
     }
   }
 }

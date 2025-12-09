@@ -1,11 +1,14 @@
 // Physics System - Gravity, Movement, and Collision
 
 import { world, queries } from '../state/world';
-import { PHYSICS, LEVEL } from '../config';
+import { PHYSICS, LEVEL, STANCE } from '../config';
 import type { Entity } from '../types';
 
 // Track if entities are grounded
 const grounded = new Map<string, boolean>();
+
+// Track previous frame's stance button state for edge detection
+const prevStanceButtonState = new Map<string, { up: boolean; down: boolean }>();
 
 export function updatePhysicsSystem(deltaTime: number): void {
   // Update player physics
@@ -68,25 +71,38 @@ export function updatePhysicsSystem(deltaTime: number): void {
 
     swordEntity.position.x = parent.position.x + swordEntity.sword.offset.x;
     swordEntity.position.y = parent.position.y + yOffset;
-  }
+    }
 }
 
 function updateStance(entity: Entity, deltaTime: number): void {
   if (!entity.stance || !entity.input) return;
+
+  // Get previous button state (default to released)
+  const prevState = prevStanceButtonState.get(entity.id) || { up: false, down: false };
+
+  // Detect button press (transition from not pressed to pressed)
+  const stanceUpPressed = entity.input.stanceUp && !prevState.up;
+  const stanceDownPressed = entity.input.stanceDown && !prevState.down;
+
+  // Update previous state for next frame
+  prevStanceButtonState.set(entity.id, {
+    up: entity.input.stanceUp,
+    down: entity.input.stanceDown,
+  });
 
   // Decrement timer
   if (entity.stance.timer > 0) {
     entity.stance.timer -= deltaTime;
   }
 
-  // Only allow stance changes when timer expires
+  // Only allow stance changes when timer expires AND button is newly pressed
   if (entity.stance.timer <= 0) {
-    if (entity.input.stanceUp) {
+    if (stanceUpPressed) {
       entity.stance.current = Math.max(0, entity.stance.current - 1) as 0 | 1 | 2;
-      entity.stance.timer = 200; // 200ms cooldown
-    } else if (entity.input.stanceDown) {
+      entity.stance.timer = STANCE.CHANGE_COOLDOWN;
+    } else if (stanceDownPressed) {
       entity.stance.current = Math.min(2, entity.stance.current + 1) as 0 | 1 | 2;
-      entity.stance.timer = 200;
+      entity.stance.timer = STANCE.CHANGE_COOLDOWN;
     }
   }
 }
