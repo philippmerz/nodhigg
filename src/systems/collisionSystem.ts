@@ -127,11 +127,12 @@ function detectHeldSwordHits(): void {
     } else if (!defenderIsArmed) {
       // Disarmed player cannot block - always lethal
       killPlayer(defender.player.id, attacker.player.id, false);
-    } else if (attacker.stance.current !== defender.stance.current) {
-      // Different stance - sword gets past guard
+    } else {
+      // Frontal hit on armed player - sword gets past guard
+      // Note: Same-stance blocking is handled by resolveSwordBlocking()
+      // which pushes players apart before swords can reach bodies
       killPlayer(defender.player.id, attacker.player.id, false);
     }
-    // If stances match, defender is armed, and not backstab, the attack is blocked
   }
 }
 
