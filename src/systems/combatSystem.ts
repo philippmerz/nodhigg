@@ -57,14 +57,8 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
     !sword.position || !sword.collider ||
     !defender.position || !defender.collider ||
     !defender.stance || !attacker.stance || !defender.health ||
-    !defender.facing || !attacker.facing || !defender.player || !attacker.player ||
-    !attacker.attack
+    !defender.facing || !attacker.facing || !defender.player || !attacker.player
   ) {
-    return;
-  }
-
-  // Only check hits during active attack (sword extended)
-  if (!attacker.attack.isAttacking && attacker.attack.extension <= 0) {
     return;
   }
 
