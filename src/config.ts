@@ -31,6 +31,11 @@ export const SWORD = {
   OFFSET_Y: 0,
   THRUST_EXTENSION: 30,    // How far sword extends on attack
   RETRACT_SPEED: 0.15,     // Extension units per ms (slow retraction)
+  // Disarm physics
+  LAUNCH_VELOCITY_X: 8,    // Horizontal launch speed
+  LAUNCH_VELOCITY_Y: -12,  // Upward launch speed
+  BOUNCE_DAMPING: 0.6,     // Velocity multiplier on wall bounce
+  PICKUP_RANGE: 30,        // How close player must be to pick up
 } as const;
 
 export const STANCE = {

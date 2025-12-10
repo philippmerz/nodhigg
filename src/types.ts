@@ -23,8 +23,9 @@ export interface Stance {
 }
 
 export interface Sword {
-  parentId: string;
+  parentId: string | null;  // null when sword is loose (dropped/flying)
   offset: { x: number; y: number };
+  state: 'held' | 'flying' | 'grounded';
 }
 
 export interface Input {
@@ -33,6 +34,13 @@ export interface Input {
   attack: boolean;
   stanceUp: boolean;
   stanceDown: boolean;
+  pickup: boolean;
+  // Edge detection (true only on frame button was pressed)
+  jumpPressed: boolean;
+  attackPressed: boolean;
+  stanceUpPressed: boolean;
+  stanceDownPressed: boolean;
+  pickupPressed: boolean;
 }
 
 export interface Sprite {

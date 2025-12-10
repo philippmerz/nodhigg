@@ -2,8 +2,12 @@
 
 import { initRenderSystem, updateRenderSystem } from './systems/renderSystem';
 import { initInputSystem, updateInputSystem } from './systems/inputSystem';
-import { updatePhysicsSystem } from './systems/physicsSystem';
-import { updateCombatSystem } from './systems/combatSystem';
+import { updateStanceSystem } from './systems/stanceSystem';
+import { updateAttackSystem } from './systems/attackSystem';
+import { updateMovementSystem } from './systems/movementSystem';
+import { updateSwordSystem } from './systems/swordSystem';
+import { updateCollisionSystem } from './systems/collisionSystem';
+import { updatePickupSystem } from './systems/pickupSystem';
 import { updateRespawnSystem } from './systems/respawnSystem';
 import { createPlayer } from './entities/createPlayer';
 import { createLevel } from './entities/createLevel';
@@ -51,16 +55,28 @@ function gameLoop(currentTime: number) {
 
   // Fixed update loop
   while (accumulator >= FIXED_TIMESTEP) {
-    // Update input (reads hardware state)
+    // 1. Read hardware input
     updateInputSystem();
 
-    // Update physics (deterministic)
-    updatePhysicsSystem(FIXED_TIMESTEP);
+    // 2. Process stance changes
+    updateStanceSystem(FIXED_TIMESTEP);
 
-    // Update combat (deterministic)
-    updateCombatSystem();
+    // 3. Process attack state machine
+    updateAttackSystem(FIXED_TIMESTEP);
 
-    // Update respawns (handles timers and recreating entities)
+    // 4. Apply movement and gravity
+    updateMovementSystem(FIXED_TIMESTEP);
+
+    // 5. Position swords (held) and apply physics (flying/grounded)
+    updateSwordSystem();
+
+    // 6. Handle sword pickup by unarmed players
+    updatePickupSystem();
+
+    // 7. Detect collisions, resolve blocking, and handle kills
+    updateCollisionSystem();
+
+    // 8. Handle respawns
     updateRespawnSystem(FIXED_TIMESTEP);
 
     accumulator -= FIXED_TIMESTEP;
