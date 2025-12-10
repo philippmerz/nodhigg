@@ -1,5 +1,8 @@
 // Game Configuration Constants
 
+// Set to true to show red collider boxes for debugging
+export const DEBUG = true;
+
 export const PHYSICS = {
   GRAVITY: 0.5,
   FRICTION: 0.85,
@@ -16,8 +19,8 @@ export const GAME = {
 } as const;
 
 export const PLAYER = {
-  WIDTH: 20,
-  HEIGHT: 40,
+  WIDTH: 60,
+  HEIGHT: 120,
   get SPAWN_P1_X() { return window.innerWidth * 0.25; }, // 25% from left
   get SPAWN_P2_X() { return window.innerWidth * 0.75; }, // 75% from left
   get SPAWN_Y() { return window.innerHeight * 0.5; },    // 50% from top
@@ -25,12 +28,12 @@ export const PLAYER = {
 } as const;
 
 export const SWORD = {
-  WIDTH: 30,
-  HEIGHT: 5,
-  OFFSET_X: 5,
-  OFFSET_Y: 0,
-  THRUST_EXTENSION: 30,    // How far sword extends on attack
-  RETRACT_SPEED: 0.15,     // Extension units per ms (slow retraction)
+  WIDTH: 90,
+  HEIGHT: 15,
+  OFFSET_X: 0,
+  OFFSET_Y: 50,
+  THRUST_EXTENSION: 60,    // How far sword extends on attack
+  RETRACT_SPEED: 0.30,     // Extension units per ms (doubled for larger extension)
   // Disarm physics
   LAUNCH_VELOCITY_X: 8,    // Horizontal launch speed
   LAUNCH_VELOCITY_Y: -12,  // Upward launch speed

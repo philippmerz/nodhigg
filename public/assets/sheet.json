@@ -1,0 +1,39 @@
+{
+	"frames": {
+		"sword": {
+			"frame": { "x": 1, "y": 1, "w": 1876, "h": 612 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 1876, "h": 612 },
+			"sourceSize": { "w": 1876, "h": 612 }
+		},
+		"player_walk_1": {
+			"frame": { "x": 1879, "y": 1, "w": 472, "h": 844 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 472, "h": 844 },
+			"sourceSize": { "w": 472, "h": 844 }
+		},
+		"player_walk_2": {
+			"frame": { "x": 1, "y": 847, "w": 370, "h": 832 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 370, "h": 832 },
+			"sourceSize": { "w": 370, "h": 832 }
+		}
+	},
+	"animations": {
+		"player_walk": ["player_walk_1", "player_walk_2"],
+		"player_idle": ["player_walk_1"],
+		"player_jump": ["player_walk_1"],
+		"player_attack": ["player_walk_1"]
+	},
+	"meta": {
+		"app": "https://www.codeandweb.com/texturepacker",
+		"version": "3.0",
+		"image": "sheet.png",
+		"format": "RGBA8888",
+		"size": { "w": 2352, "h": 1680 },
+		"scale": 1
+	}
+}

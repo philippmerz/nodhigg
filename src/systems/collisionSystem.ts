@@ -107,6 +107,12 @@ function detectHeldSwordHits(): void {
 
     if (!boxesOverlap(swordBox, defenderBox)) continue;
 
+    // Check if defender has a sword to block with
+    const defenderSword = world.entities.find(
+      (e) => e.sword?.parentId === defender.id && e.sword.state === 'held'
+    );
+    const defenderIsArmed = !!defenderSword;
+
     // Determine if hit from behind
     const defenderCenter = getCenterX(defenderBox);
     const swordCenter = getCenterX(swordBox);
@@ -118,11 +124,14 @@ function detectHeldSwordHits(): void {
     if (hitFromBehind) {
       // Backstab - always lethal
       killPlayer(defender.player.id, attacker.player.id, true);
+    } else if (!defenderIsArmed) {
+      // Disarmed player cannot block - always lethal
+      killPlayer(defender.player.id, attacker.player.id, false);
     } else if (attacker.stance.current !== defender.stance.current) {
       // Different stance - sword gets past guard
       killPlayer(defender.player.id, attacker.player.id, false);
     }
-    // If stances match (and not backstab), the attack is blocked
+    // If stances match, defender is armed, and not backstab, the attack is blocked
   }
 }
 

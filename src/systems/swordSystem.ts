@@ -37,10 +37,11 @@ function updateHeldSword(swordEntity: Entity): void {
   const extension = parent.attack?.extension ?? 0;
 
   // Calculate Y offset based on stance
+  // Player is 80px tall, so stance positions are spread across the body
   let yOffset = swordEntity.sword.offset.y;
-  if (parent.stance.current === 0) yOffset += 15; // Low
-  if (parent.stance.current === 1) yOffset += 0;  // Mid
-  if (parent.stance.current === 2) yOffset -= 15; // High
+  if (parent.stance.current === 0) yOffset += 30; // Low (legs)
+  if (parent.stance.current === 1) yOffset += 0;  // Mid (torso)
+  if (parent.stance.current === 2) yOffset -= 30; // High (head)
 
   // Calculate X position based on facing direction and attack extension
   const totalOffset = swordEntity.sword.offset.x + extension;

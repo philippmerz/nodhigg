@@ -12,4 +12,5 @@ export const queries = {
   swords: world.with('sword', 'position', 'collider'),
   walls: world.with('collider', 'position').where((e) => e.collider.tag === 'wall'),
   sprites: world.with('sprite', 'position'),
+  collidables: world.with('collider', 'position'),
 };

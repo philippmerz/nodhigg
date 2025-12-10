@@ -1,6 +1,5 @@
 // Main Entry Point - Fixed Timestep Game Loop
 
-import { initRenderSystem, updateRenderSystem } from './systems/renderSystem';
 import { initInputSystem, updateInputSystem } from './systems/inputSystem';
 import { updateStanceSystem } from './systems/stanceSystem';
 import { updateAttackSystem } from './systems/attackSystem';
@@ -10,10 +9,13 @@ import { updateCollisionSystem } from './systems/collisionSystem';
 import { updatePickupSystem } from './systems/pickupSystem';
 import { updateRespawnSystem } from './systems/respawnSystem';
 import { updateStageSystem } from './systems/stageSystem';
+import { updateAnimationSystem } from './systems/animationSystem';
 import { createPlayer } from './entities/createPlayer';
 import { createLevel } from './entities/createLevel';
 import { GAME, PLAYER } from './config';
 import { getStageState } from './state/stageManager';
+import { initRenderSystem, updateRenderSystem } from './systems/renderSystem';
+import { initDebugSystem, updateDebugSystem } from './systems/debugSystem';
 
 // Fixed timestep configuration
 const FIXED_TIMESTEP = GAME.FIXED_TIMESTEP; // 16.67ms (60 FPS)
@@ -25,6 +27,7 @@ let accumulator = 0;
 async function init() {
   // Initialize systems
   const app = await initRenderSystem();
+  initDebugSystem(app.stage);
   initInputSystem();
 
   // Create game entities
@@ -84,9 +87,12 @@ function gameLoop(currentTime: number) {
 
       // 8. Handle respawns
       updateRespawnSystem(FIXED_TIMESTEP);
+
+      // 9. Update animation timers
+      updateAnimationSystem(FIXED_TIMESTEP);
     }
 
-    // 9. Handle stage progression and transitions (always runs)
+    // 10. Handle stage progression and transitions (always runs)
     updateStageSystem(FIXED_TIMESTEP);
 
     accumulator -= FIXED_TIMESTEP;
@@ -97,6 +103,9 @@ function gameLoop(currentTime: number) {
 
   // Render with interpolation
   updateRenderSystem(alpha);
+  
+  // Draw debug collider boxes (if DEBUG is enabled)
+  updateDebugSystem();
 }
 
 // Start the game

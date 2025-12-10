@@ -47,6 +47,15 @@ export interface Sprite {
   key: string; // Used to map to Pixi sprite
 }
 
+// Animation states for player sprites
+export type AnimationName = 'idle' | 'walk' | 'jump' | 'attack';
+
+export interface Animation {
+  current: AnimationName;
+  frameTime: number;      // Time accumulator for frame switching
+  frameIndex: number;     // Current frame index in animation
+}
+
 export interface Health {
   current: number;
   max: number;
@@ -76,6 +85,7 @@ export type Entity = {
   sword?: Sword;
   input?: Input;
   sprite?: Sprite;
+  animation?: Animation;
   health?: Health;
   player?: Player;
   facing?: Facing;

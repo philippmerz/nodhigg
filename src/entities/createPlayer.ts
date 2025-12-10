@@ -52,6 +52,11 @@ export function createPlayer(
     sprite: {
       key: entityId,
     },
+    animation: {
+      current: 'idle',
+      frameTime: 0,
+      frameIndex: 0,
+    },
     health: {
       current: PLAYER.STARTING_HEALTH,
       max: PLAYER.STARTING_HEALTH,
