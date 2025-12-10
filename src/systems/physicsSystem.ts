@@ -11,8 +11,10 @@ const grounded = new Map<string, boolean>();
 const prevStanceButtonState = new Map<string, { up: boolean; down: boolean }>();
 
 export function updatePhysicsSystem(deltaTime: number): void {
+  const players = Array.from(queries.players);
+  
   // Update player physics
-  for (const entity of queries.players) {
+  for (const entity of players) {
     if (!entity.position || !entity.velocity || !entity.input || !entity.collider) continue;
 
     // Apply horizontal input
@@ -59,6 +61,11 @@ export function updatePhysicsSystem(deltaTime: number): void {
     }
   }
 
+  // Check sword-to-sword collision (blocking) when stances match
+  if (players.length === 2) {
+    resolveSwordCollision(players[0], players[1]);
+  }
+
   // Update sword positions based on parent
   for (const swordEntity of queries.swords) {
     if (!swordEntity.sword || !swordEntity.position) continue;
@@ -81,6 +88,67 @@ export function updatePhysicsSystem(deltaTime: number): void {
     swordEntity.position.x = parent.position.x + (swordEntity.sword.offset.x * facing);
     swordEntity.position.y = parent.position.y + yOffset;
     }
+}
+
+/**
+ * When two players have the same stance and their swords collide,
+ * push them apart so they can't walk through each other
+ */
+function resolveSwordCollision(player1: Entity, player2: Entity): void {
+  if (
+    !player1.position || !player1.stance || !player1.facing || !player1.collider ||
+    !player2.position || !player2.stance || !player2.facing || !player2.collider
+  ) {
+    return;
+  }
+
+  // Only block if stances match
+  if (player1.stance.current !== player2.stance.current) return;
+
+  // Get sword entities
+  const sword1 = world.entities.find(e => e.sword?.parentId === player1.id);
+  const sword2 = world.entities.find(e => e.sword?.parentId === player2.id);
+
+  if (!sword1?.position || !sword1?.collider || !sword2?.position || !sword2?.collider) return;
+
+  // Check if swords overlap
+  const s1 = { x: sword1.position.x, y: sword1.position.y, w: sword1.collider.w, h: sword1.collider.h };
+  const s2 = { x: sword2.position.x, y: sword2.position.y, w: sword2.collider.w, h: sword2.collider.h };
+
+  const swordsOverlap = 
+    s1.x < s2.x + s2.w &&
+    s1.x + s1.w > s2.x &&
+    s1.y < s2.y + s2.h &&
+    s1.y + s1.h > s2.y;
+
+  if (!swordsOverlap) return;
+
+  // Calculate overlap and push players apart
+  const s1Center = s1.x + s1.w / 2;
+  const s2Center = s2.x + s2.w / 2;
+  
+  // Calculate the overlap amount
+  let overlap: number;
+  if (s1Center < s2Center) {
+    // Sword1 is to the left of Sword2
+    overlap = (s1.x + s1.w) - s2.x;
+  } else {
+    // Sword2 is to the left of Sword1
+    overlap = (s2.x + s2.w) - s1.x;
+  }
+
+  // Push each player back by half the overlap
+  const pushAmount = overlap / 2 + 1; // +1 to ensure separation
+
+  if (player1.position.x < player2.position.x) {
+    // Player1 is on the left, push left; Player2 push right
+    player1.position.x -= pushAmount;
+    player2.position.x += pushAmount;
+  } else {
+    // Player2 is on the left, push left; Player1 push right
+    player1.position.x += pushAmount;
+    player2.position.x -= pushAmount;
+  }
 }
 
 function updateStance(entity: Entity, deltaTime: number): void {
