@@ -290,7 +290,9 @@ function updateSwordSprite(entity: Entity, sprite: Sprite): void {
   const container = sprite.parent;
   if (!container) return;
 
-  const baseScale = Math.abs(sprite.scale.x);
+  // Calculate scale based on current collider width (which changes during attack)
+  // Original sword sprite is 1876px wide
+  const currentScale = entity.collider.w / 1876;
 
   // Find parent player to determine facing
   if (entity.sword?.parentId) {
@@ -317,7 +319,7 @@ function updateSwordSprite(entity: Entity, sprite: Sprite): void {
         // causing the sprite to render to the LEFT of the position.
         // To compensate, we position at the RIGHT edge of the collider.
         sprite.anchor.set(0, 0.5);
-        sprite.scale.x = -baseScale;
+        sprite.scale.x = -currentScale;
         container.position.set(
           entity.position.x + entity.collider.w, // Right edge of collider
           entity.position.y + SWORD.HEIGHT / 2
@@ -328,7 +330,7 @@ function updateSwordSprite(entity: Entity, sprite: Sprite): void {
         // With anchor (0, 0.5), sprite renders to the right of position.
         // Position at the LEFT edge of the collider.
         sprite.anchor.set(0, 0.5);
-        sprite.scale.x = baseScale;
+        sprite.scale.x = currentScale;
         container.position.set(
           entity.position.x, // Left edge of collider
           entity.position.y + SWORD.HEIGHT / 2
@@ -338,7 +340,7 @@ function updateSwordSprite(entity: Entity, sprite: Sprite): void {
   } else {
     // Loose sword - default orientation pointing right
     sprite.anchor.set(0, 0.5);
-    sprite.scale.x = -baseScale;
+    sprite.scale.x = -currentScale;
     container.position.set(
       entity.position.x + entity.collider.w, // Compensate for negative scale flip
       entity.position.y + SWORD.HEIGHT / 2

@@ -1,7 +1,7 @@
 // Game Configuration Constants
 
 // Set to true to show red collider boxes for debugging
-export const DEBUG = true;
+export const DEBUG = false;
 
 export const PHYSICS = {
   GRAVITY: 0.5,
