@@ -2,9 +2,23 @@
 
 import { PLAYER, SWORD, STANCE } from '../config';
 import { world } from '../state/world';
+import type { Entity } from '../types';
 
-export function createPlayer(playerId: 1 | 2, x: number, y: number): string {
+/**
+ * Create a player entity and its associated sword
+ * @param playerId - Player 1 or 2
+ * @param x - Spawn X position
+ * @param y - Spawn Y position
+ * @param facingDirection - Initial facing direction (defaults based on player ID)
+ */
+export function createPlayer(
+  playerId: 1 | 2,
+  x: number,
+  y: number,
+  facingDirection?: 1 | -1
+): string {
   const entityId = `player${playerId}`;
+  const facing = facingDirection ?? (playerId === 1 ? 1 : -1);
   
   // Create the player entity
   world.add({
@@ -37,7 +51,7 @@ export function createPlayer(playerId: 1 | 2, x: number, y: number): string {
       max: PLAYER.STARTING_HEALTH,
     },
     facing: {
-      direction: playerId === 1 ? 1 : -1, // P1 faces right, P2 faces left
+      direction: facing,
     },
   });
 
@@ -49,7 +63,7 @@ export function createPlayer(playerId: 1 | 2, x: number, y: number): string {
       parentId: entityId,
       offset: { x: SWORD.OFFSET_X, y: SWORD.OFFSET_Y },
     },
-    position: { x: x + SWORD.OFFSET_X, y: y + SWORD.OFFSET_Y },
+    position: { x: x + SWORD.OFFSET_X * facing, y: y + SWORD.OFFSET_Y },
     velocity: { x: 0, y: 0 },
     collider: {
       type: 'box',
@@ -63,4 +77,28 @@ export function createPlayer(playerId: 1 | 2, x: number, y: number): string {
   });
 
   return entityId;
+}
+
+/**
+ * Remove a player entity and its associated sword from the world
+ * @param playerId - Player 1 or 2
+ * @returns The removed player entity (for accessing last known state), or undefined
+ */
+export function removePlayer(playerId: 1 | 2): Entity | undefined {
+  const entityId = `player${playerId}`;
+  const swordId = `sword${playerId}`;
+
+  // Find the entities
+  const playerEntity = world.entities.find(e => e.id === entityId);
+  const swordEntity = world.entities.find(e => e.id === swordId);
+
+  // Remove from world
+  if (swordEntity) {
+    world.remove(swordEntity);
+  }
+  if (playerEntity) {
+    world.remove(playerEntity);
+  }
+
+  return playerEntity;
 }

@@ -50,3 +50,8 @@ export const LEVEL = {
   get GROUND_Y() { return window.innerHeight * 0.83; },     // 83% down screen
   get GROUND_HEIGHT() { return window.innerHeight * 0.17; }, // 17% of screen
 } as const;
+
+export const RESPAWN = {
+  TIME: 3000, // 3 seconds in ms
+  DISTANCE: 100, // Distance from other player to spawn
+} as const;

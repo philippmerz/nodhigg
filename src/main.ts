@@ -4,6 +4,7 @@ import { initRenderSystem, updateRenderSystem } from './systems/renderSystem';
 import { initInputSystem, updateInputSystem } from './systems/inputSystem';
 import { updatePhysicsSystem } from './systems/physicsSystem';
 import { updateCombatSystem } from './systems/combatSystem';
+import { updateRespawnSystem } from './systems/respawnSystem';
 import { createPlayer } from './entities/createPlayer';
 import { createLevel } from './entities/createLevel';
 import { GAME, PLAYER } from './config';
@@ -58,6 +59,9 @@ function gameLoop(currentTime: number) {
 
     // Update combat (deterministic)
     updateCombatSystem();
+
+    // Update respawns (handles timers and recreating entities)
+    updateRespawnSystem(FIXED_TIMESTEP);
 
     accumulator -= FIXED_TIMESTEP;
   }

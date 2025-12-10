@@ -1,6 +1,8 @@
 // Combat System - Stance-Based Fighting Logic
 
 import { queries } from '../state/world';
+import { registerRespawn } from '../state/respawnManager';
+import { removePlayer } from '../entities/createPlayer';
 import type { Entity } from '../types';
 
 // Check if two box colliders overlap
@@ -21,6 +23,7 @@ export function updateCombatSystem(): void {
   const swords = Array.from(queries.swords);
   const players = Array.from(queries.players);
 
+  // Need 2 players and 2 swords for combat
   if (swords.length < 2 || players.length < 2) return;
 
   const [sword1, sword2] = swords;
@@ -45,6 +48,8 @@ export function updateCombatSystem(): void {
   }
 
   // Check sword-to-player collisions
+  // Note: We check both, but only one kill can happen per frame
+  // (the second check will fail because the player is removed)
   checkSwordHit(sword1, player2, player1);
   checkSwordHit(sword2, player1, player2);
 }
@@ -54,7 +59,7 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
     !sword.position || !sword.collider ||
     !defender.position || !defender.collider ||
     !defender.stance || !attacker.stance || !defender.health ||
-    !defender.facing || !attacker.facing
+    !defender.facing || !attacker.facing || !defender.player || !attacker.player
   ) {
     return;
   }
@@ -78,8 +83,8 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
 
     if (hitFromBehind) {
       // Back hit is always lethal
-      defender.health.current = 0;
-      console.log(`Player ${attacker.player?.id} backstabbed Player ${defender.player?.id}!`);
+      killPlayer(defender, attacker);
+      console.log(`Player ${attacker.player.id} backstabbed Player ${defender.player.id}!`);
       return;
     }
 
@@ -88,10 +93,26 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
     
     if (hit) {
       // Kill the defender
-      defender.health.current = 0;
-      console.log(`Player ${attacker.player?.id} killed Player ${defender.player?.id}!`);
+      killPlayer(defender, attacker);
+      console.log(`Player ${attacker.player.id} killed Player ${defender.player.id}!`);
     }
   }
+}
+
+function killPlayer(defender: Entity, attacker: Entity): void {
+  if (!defender.player || !attacker.position || !attacker.facing) return;
+  
+  const defenderId = defender.player.id;
+  
+  // Store attacker's position and facing for respawn calculation
+  const killerPosition = { x: attacker.position.x, y: attacker.position.y };
+  const killerFacing = attacker.facing.direction;
+  
+  // Remove the player (and sword) from the world entirely
+  removePlayer(defenderId);
+  
+  // Register for respawn with killer info
+  registerRespawn(defenderId, killerPosition, killerFacing);
 }
 
 function isStanceAdvantage(attackStance: 0 | 1 | 2, defenseStance: 0 | 1 | 2): boolean {
