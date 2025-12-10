@@ -62,3 +62,9 @@ export const RESPAWN = {
   TIME: 3000, // 3 seconds in ms
   DISTANCE: 200, // Distance from other player to spawn
 } as const;
+
+export const STAGE = {
+  TOTAL_STAGES: 5,           // Number of stages each player must complete to win
+  TRANSITION_DURATION: 800,  // ms for fade out + fade in
+  EDGE_THRESHOLD: 20,        // How close to edge to trigger progression
+} as const;

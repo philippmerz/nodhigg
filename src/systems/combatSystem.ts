@@ -3,6 +3,7 @@
 import { queries } from '../state/world';
 import { registerRespawn } from '../state/respawnManager';
 import { removePlayer } from '../entities/createPlayer';
+import { recordKill } from '../state/stageManager';
 
 /**
  * Kill a player and register them for respawn
@@ -22,6 +23,9 @@ export function killPlayer(defenderId: 1 | 2, attackerId: 1 | 2, isBackstab: boo
 
   // Register for respawn with killer info
   registerRespawn(defenderId, killerPosition, killerFacing);
+
+  // Record the kill for stage progression
+  recordKill(attackerId);
 
   // Log the kill
   if (isBackstab) {

@@ -9,9 +9,11 @@ import { updateSwordSystem } from './systems/swordSystem';
 import { updateCollisionSystem } from './systems/collisionSystem';
 import { updatePickupSystem } from './systems/pickupSystem';
 import { updateRespawnSystem } from './systems/respawnSystem';
+import { updateStageSystem } from './systems/stageSystem';
 import { createPlayer } from './entities/createPlayer';
 import { createLevel } from './entities/createLevel';
 import { GAME, PLAYER } from './config';
+import { getStageState } from './state/stageManager';
 
 // Fixed timestep configuration
 const FIXED_TIMESTEP = GAME.FIXED_TIMESTEP; // 16.67ms (60 FPS)
@@ -55,29 +57,37 @@ function gameLoop(currentTime: number) {
 
   // Fixed update loop
   while (accumulator >= FIXED_TIMESTEP) {
-    // 1. Read hardware input
-    updateInputSystem();
+    const stageState = getStageState();
 
-    // 2. Process stance changes
-    updateStanceSystem(FIXED_TIMESTEP);
+    // Skip gameplay updates during transition or after win
+    if (!stageState.isTransitioning && !stageState.winner) {
+      // 1. Read hardware input
+      updateInputSystem();
 
-    // 3. Process attack state machine
-    updateAttackSystem(FIXED_TIMESTEP);
+      // 2. Process stance changes
+      updateStanceSystem(FIXED_TIMESTEP);
 
-    // 4. Apply movement and gravity
-    updateMovementSystem(FIXED_TIMESTEP);
+      // 3. Process attack state machine
+      updateAttackSystem(FIXED_TIMESTEP);
 
-    // 5. Position swords (held) and apply physics (flying/grounded)
-    updateSwordSystem();
+      // 4. Apply movement and gravity
+      updateMovementSystem(FIXED_TIMESTEP);
 
-    // 6. Handle sword pickup by unarmed players
-    updatePickupSystem();
+      // 5. Position swords (held) and apply physics (flying/grounded)
+      updateSwordSystem();
 
-    // 7. Detect collisions, resolve blocking, and handle kills
-    updateCollisionSystem();
+      // 6. Handle sword pickup by unarmed players
+      updatePickupSystem();
 
-    // 8. Handle respawns
-    updateRespawnSystem(FIXED_TIMESTEP);
+      // 7. Detect collisions, resolve blocking, and handle kills
+      updateCollisionSystem();
+
+      // 8. Handle respawns
+      updateRespawnSystem(FIXED_TIMESTEP);
+    }
+
+    // 9. Handle stage progression and transitions (always runs)
+    updateStageSystem(FIXED_TIMESTEP);
 
     accumulator -= FIXED_TIMESTEP;
   }
