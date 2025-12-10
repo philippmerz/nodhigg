@@ -1,7 +1,7 @@
 // Physics System - Gravity, Movement, and Collision
 
 import { world, queries } from '../state/world';
-import { PHYSICS, LEVEL, STANCE } from '../config';
+import { PHYSICS, LEVEL, STANCE, SWORD } from '../config';
 import type { Entity } from '../types';
 
 // Track if entities are grounded
@@ -10,6 +10,9 @@ const grounded = new Map<string, boolean>();
 // Track previous frame's stance button state for edge detection
 const prevStanceButtonState = new Map<string, { up: boolean; down: boolean }>();
 
+// Track previous frame's attack button state for edge detection
+const prevAttackButtonState = new Map<string, boolean>();
+
 export function updatePhysicsSystem(deltaTime: number): void {
   const players = Array.from(queries.players);
   
@@ -17,11 +20,23 @@ export function updatePhysicsSystem(deltaTime: number): void {
   for (const entity of players) {
     if (!entity.position || !entity.velocity || !entity.input || !entity.collider) continue;
 
-    // Apply horizontal input
-    entity.velocity.x = entity.input.x * PHYSICS.MOVE_SPEED;
+    // Update attack state first
+    if (entity.attack) {
+      updateAttack(entity, deltaTime);
+    }
 
-    // Update facing direction based on movement
-    if (entity.input.x !== 0 && entity.facing) {
+    // Block movement if retracting
+    const isRetracting = entity.attack?.isRetracting ?? false;
+    
+    // Apply horizontal input (blocked during retraction)
+    if (isRetracting) {
+      entity.velocity.x = 0;
+    } else {
+      entity.velocity.x = entity.input.x * PHYSICS.MOVE_SPEED;
+    }
+
+    // Update facing direction based on movement (not during attack)
+    if (entity.input.x !== 0 && entity.facing && !isRetracting) {
       entity.facing.direction = entity.input.x > 0 ? 1 : -1;
     }
 
@@ -33,9 +48,9 @@ export function updatePhysicsSystem(deltaTime: number): void {
       entity.velocity.y = PHYSICS.MAX_FALL_SPEED;
     }
 
-    // Jump
+    // Jump (blocked during retraction)
     const isGrounded = grounded.get(entity.id) || false;
-    if (entity.input.jump && isGrounded) {
+    if (entity.input.jump && isGrounded && !isRetracting) {
       entity.velocity.y = PHYSICS.JUMP_FORCE;
     }
 
@@ -55,8 +70,8 @@ export function updatePhysicsSystem(deltaTime: number): void {
       grounded.set(entity.id, false);
     }
 
-    // Apply stance-based movement
-    if (entity.stance) {
+    // Apply stance-based movement (blocked during attack)
+    if (entity.stance && !isRetracting) {
       updateStance(entity, deltaTime);
     }
   }
@@ -68,13 +83,16 @@ export function updatePhysicsSystem(deltaTime: number): void {
 
   // Update sword positions based on parent
   for (const swordEntity of queries.swords) {
-    if (!swordEntity.sword || !swordEntity.position) continue;
+    if (!swordEntity.sword || !swordEntity.position || !swordEntity.collider) continue;
 
     const parent = world.entities.find((e) => e.id === swordEntity.sword.parentId);
     if (!parent || !parent.position || !parent.stance) continue;
 
     // Get facing direction (default to right)
     const facing = parent.facing?.direction ?? 1;
+
+    // Get attack extension
+    const extension = parent.attack?.extension ?? 0;
 
     // Position sword relative to parent and stance
     let yOffset = swordEntity.sword.offset.y;
@@ -84,10 +102,52 @@ export function updatePhysicsSystem(deltaTime: number): void {
     if (parent.stance.current === 1) yOffset += 0;  // Mid
     if (parent.stance.current === 2) yOffset -= 15; // High
 
-    // Position sword on the side player is facing
-    swordEntity.position.x = parent.position.x + (swordEntity.sword.offset.x * facing);
+    // Position sword on the side player is facing, with attack extension
+    const totalOffset = swordEntity.sword.offset.x + extension;
+    swordEntity.position.x = parent.position.x + (totalOffset * facing);
     swordEntity.position.y = parent.position.y + yOffset;
+
+    // Update sword collider width based on extension
+    swordEntity.collider.w = SWORD.WIDTH + extension;
     }
+}
+
+/**
+ * Handle attack input and sword extension/retraction
+ */
+function updateAttack(entity: Entity, deltaTime: number): void {
+  if (!entity.attack || !entity.input) return;
+
+  // Get previous attack button state
+  const prevAttack = prevAttackButtonState.get(entity.id) || false;
+  const attackPressed = entity.input.attack && !prevAttack;
+  
+  // Update previous state
+  prevAttackButtonState.set(entity.id, entity.input.attack);
+
+  // Handle attack initiation
+  if (attackPressed && !entity.attack.isAttacking && !entity.attack.isRetracting) {
+    // Start attack - instant extension
+    entity.attack.isAttacking = true;
+    entity.attack.extension = SWORD.THRUST_EXTENSION;
+    entity.attack.isRetracting = false;
+  }
+
+  // If attacking (sword extended), immediately start retracting
+  if (entity.attack.isAttacking && entity.attack.extension >= SWORD.THRUST_EXTENSION) {
+    entity.attack.isAttacking = false;
+    entity.attack.isRetracting = true;
+  }
+
+  // Handle retraction
+  if (entity.attack.isRetracting) {
+    entity.attack.extension -= SWORD.RETRACT_SPEED * deltaTime;
+    
+    if (entity.attack.extension <= 0) {
+      entity.attack.extension = 0;
+      entity.attack.isRetracting = false;
+    }
+  }
 }
 
 /**

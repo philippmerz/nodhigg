@@ -52,6 +52,12 @@ export interface Facing {
   direction: 1 | -1; // 1 = right, -1 = left
 }
 
+export interface Attack {
+  isAttacking: boolean;      // Currently in attack animation
+  extension: number;         // Current sword extension (0 to max)
+  isRetracting: boolean;     // In retraction phase
+}
+
 // Complete Entity Type
 export type Entity = {
   id: string;
@@ -65,4 +71,5 @@ export type Entity = {
   health?: Health;
   player?: Player;
   facing?: Facing;
+  attack?: Attack;
 };

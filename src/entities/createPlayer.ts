@@ -53,6 +53,11 @@ export function createPlayer(
     facing: {
       direction: facing,
     },
+    attack: {
+      isAttacking: false,
+      extension: 0,
+      isRetracting: false,
+    },
   });
 
   // Create the sword entity attached to the player

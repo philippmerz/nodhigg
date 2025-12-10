@@ -29,7 +29,7 @@ export function updateCombatSystem(): void {
   const [sword1, sword2] = swords;
   const [player1, player2] = players;
 
-  // Check sword-to-sword collision (Clash/Disarm)
+  // Check sword-to-sword collision during attack
   if (
     sword1.position && sword1.collider &&
     sword2.position && sword2.collider
@@ -39,17 +39,15 @@ export function updateCombatSystem(): void {
       { x: sword2.position.x, y: sword2.position.y, w: sword2.collider.w, h: sword2.collider.h }
     );
 
-    if (collision) {
-      // If stances match, it's a clash (disarm logic could go here)
-      if (player1.stance && player2.stance && player1.stance.current === player2.stance.current) {
-        handleClash(player1, player2);
+    if (collision && player1.stance && player2.stance) {
+      // If stances match and one is attacking, disarm
+      if (player1.stance.current === player2.stance.current) {
+        handleSwordClash(player1, player2);
       }
     }
   }
 
-  // Check sword-to-player collisions
-  // Note: We check both, but only one kill can happen per frame
-  // (the second check will fail because the player is removed)
+  // Check sword-to-player collisions (only during attack)
   checkSwordHit(sword1, player2, player1);
   checkSwordHit(sword2, player1, player2);
 }
@@ -59,8 +57,14 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
     !sword.position || !sword.collider ||
     !defender.position || !defender.collider ||
     !defender.stance || !attacker.stance || !defender.health ||
-    !defender.facing || !attacker.facing || !defender.player || !attacker.player
+    !defender.facing || !attacker.facing || !defender.player || !attacker.player ||
+    !attacker.attack
   ) {
+    return;
+  }
+
+  // Only check hits during active attack (sword extended)
+  if (!attacker.attack.isAttacking && attacker.attack.extension <= 0) {
     return;
   }
 
@@ -93,10 +97,48 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
       killPlayer(defender, attacker);
       console.log(`Player ${attacker.player.id} killed Player ${defender.player.id}!`);
     }
-    // If stances match, the swords block each other (handled in physics)
+    // If stances match, the attack is blocked (handled by sword collision)
   }
 }
 
+/**
+ * Handle sword-to-sword clash during attack
+ * If one player is attacking and stances match, the attacker gets disarmed
+ */
+function handleSwordClash(player1: Entity, player2: Entity): void {
+  const p1Attacking = player1.attack?.isAttacking || (player1.attack?.extension ?? 0) > 0;
+  const p2Attacking = player2.attack?.isAttacking || (player2.attack?.extension ?? 0) > 0;
+
+  // Disarm the attacker(s)
+  if (p1Attacking && player1.attack) {
+    disarmPlayer(player1);
+    console.log(`Player 1 was disarmed!`);
+  }
+  if (p2Attacking && player2.attack) {
+    disarmPlayer(player2);
+    console.log(`Player 2 was disarmed!`);
+  }
+}
+
+/**
+ * Disarm a player - cancel their attack and add knockback
+ */
+function disarmPlayer(player: Entity): void {
+  if (player.attack) {
+    player.attack.isAttacking = false;
+    player.attack.extension = 0;
+    player.attack.isRetracting = false;
+  }
+  
+  // Add knockback
+  if (player.velocity && player.facing) {
+    player.velocity.x = -player.facing.direction * 8;
+  }
+}
+
+/**
+ * Kill a player and register for respawn
+ */
 function killPlayer(defender: Entity, attacker: Entity): void {
   if (!defender.player || !attacker.position || !attacker.facing) return;
   
@@ -111,14 +153,4 @@ function killPlayer(defender: Entity, attacker: Entity): void {
   
   // Register for respawn with killer info
   registerRespawn(defenderId, killerPosition, killerFacing);
-}
-
-function handleClash(player1: Entity, player2: Entity): void {
-  // When stances match, swords clash
-  // Could implement disarm logic, knockback, etc.
-  console.log('Clash!');
-  
-  // Simple knockback
-  if (player1.velocity) player1.velocity.x -= 2;
-  if (player2.velocity) player2.velocity.x += 2;
 }

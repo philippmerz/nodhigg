@@ -29,6 +29,8 @@ export const SWORD = {
   HEIGHT: 5,
   OFFSET_X: 25,
   OFFSET_Y: 0,
+  THRUST_EXTENSION: 30,    // How far sword extends on attack
+  RETRACT_SPEED: 0.15,     // Extension units per ms (slow retraction)
 } as const;
 
 export const STANCE = {
@@ -53,5 +55,5 @@ export const LEVEL = {
 
 export const RESPAWN = {
   TIME: 3000, // 3 seconds in ms
-  DISTANCE: 100, // Distance from other player to spawn
+  DISTANCE: 200, // Distance from other player to spawn
 } as const;
