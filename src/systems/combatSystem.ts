@@ -88,14 +88,12 @@ function checkSwordHit(sword: Entity, defender: Entity, attacker: Entity): void 
       return;
     }
 
-    // Rock-Paper-Scissors logic: High > Low > Mid > High
-    const hit = isStanceAdvantage(attacker.stance.current, defender.stance.current);
-    
-    if (hit) {
-      // Kill the defender
+    // Kill if stances are different (attacker's sword gets past defender's guard)
+    if (attacker.stance.current !== defender.stance.current) {
       killPlayer(defender, attacker);
       console.log(`Player ${attacker.player.id} killed Player ${defender.player.id}!`);
     }
+    // If stances match, the swords block each other (handled in physics)
   }
 }
 
@@ -113,17 +111,6 @@ function killPlayer(defender: Entity, attacker: Entity): void {
   
   // Register for respawn with killer info
   registerRespawn(defenderId, killerPosition, killerFacing);
-}
-
-function isStanceAdvantage(attackStance: 0 | 1 | 2, defenseStance: 0 | 1 | 2): boolean {
-  // High (2) beats Low (0)
-  if (attackStance === 2 && defenseStance === 0) return true;
-  // Low (0) beats Mid (1)
-  if (attackStance === 0 && defenseStance === 1) return true;
-  // Mid (1) beats High (2)
-  if (attackStance === 1 && defenseStance === 2) return true;
-  
-  return false;
 }
 
 function handleClash(player1: Entity, player2: Entity): void {
