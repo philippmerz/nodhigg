@@ -1,7 +1,7 @@
 // Physics System - Gravity, Movement, and Collision
 
 import { world, queries } from '../state/world';
-import { PHYSICS, LEVEL, STANCE, SWORD } from '../config';
+import { PHYSICS, LEVEL, STANCE, SWORD, PLAYER } from '../config';
 import type { Entity } from '../types';
 
 // Track if entities are grounded
@@ -104,11 +104,19 @@ export function updatePhysicsSystem(deltaTime: number): void {
 
     // Position sword on the side player is facing, with attack extension
     const totalOffset = swordEntity.sword.offset.x + extension;
-    swordEntity.position.x = parent.position.x + (totalOffset * facing);
+    const swordWidth = SWORD.WIDTH + extension;
+    
+    if (facing === 1) {
+      // Facing right: sword starts at player's right edge + offset
+      swordEntity.position.x = parent.position.x + PLAYER.WIDTH + totalOffset;
+    } else if (facing === -1) {
+      // Facing left: sword ends at player's left edge - offset
+      swordEntity.position.x = parent.position.x - totalOffset - swordWidth;
+    }
     swordEntity.position.y = parent.position.y + yOffset;
 
     // Update sword collider width based on extension
-    swordEntity.collider.w = SWORD.WIDTH + extension;
+    swordEntity.collider.w = swordWidth;
     }
 }
 

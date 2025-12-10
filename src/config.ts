@@ -27,7 +27,7 @@ export const PLAYER = {
 export const SWORD = {
   WIDTH: 30,
   HEIGHT: 5,
-  OFFSET_X: 25,
+  OFFSET_X: 5,
   OFFSET_Y: 0,
   THRUST_EXTENSION: 30,    // How far sword extends on attack
   RETRACT_SPEED: 0.15,     // Extension units per ms (slow retraction)
