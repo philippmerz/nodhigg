@@ -18,7 +18,7 @@ import {
   Spritesheet,
 } from 'pixi.js';
 import { queries } from '../state/world';
-import { GAME, PLAYER, SWORD, STAGE } from '../config';
+import { GAME, PLAYER, SWORD, STAGE, COLORS } from '../config';
 import { getTransitionOpacity, getStageState } from '../state/stageManager';
 import type { Entity, AnimationName } from '../types';
 
@@ -79,6 +79,9 @@ export async function initRenderSystem(): Promise<Application> {
   app.stage.addChild(gameContainer);
   app.stage.addChild(uiContainer);
 
+  // Add background sprite (behind everything in gameContainer)
+  createBackgroundSprite();
+
   // Initialize UI elements
   initUI();
 
@@ -92,6 +95,25 @@ async function loadAssets(): Promise<void> {
   console.log('Spritesheet loaded:', spritesheet);
   console.log('Available textures:', Object.keys(spritesheet.textures));
   console.log('Available animations:', Object.keys(spritesheet.animations));
+}
+
+function createBackgroundSprite(): void {
+  if (!spritesheet) return;
+  
+  const bgTexture = spritesheet.textures['background'];
+  if (!bgTexture) {
+    console.warn('Background texture not found in spritesheet');
+    return;
+  }
+  
+  const bgSprite = new Sprite(bgTexture);
+  // Scale background to fill the game area
+  bgSprite.width = GAME.WIDTH;
+  bgSprite.height = GAME.HEIGHT;
+  bgSprite.position.set(0, 0);
+  
+  // Add at the back of gameContainer (index 0)
+  gameContainer.addChildAt(bgSprite, 0);
 }
 
 function initUI(): void {
@@ -218,7 +240,7 @@ function createSpriteForEntity(entity: Entity): Container | null {
     // Level geometry - use colored rectangles (no sprite in sheet)
     const graphics = new Graphics();
     const isGround = entity.id === 'ground';
-    const color = isGround ? 0x27ae60 : 0x95a5a6;
+    const color = isGround ? COLORS.GROUND : COLORS.WALL;
     
     graphics.rect(0, 0, entity.collider.w, entity.collider.h);
     graphics.fill(color);

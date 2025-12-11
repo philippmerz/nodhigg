@@ -1,5 +1,12 @@
 {
 	"frames": {
+		"background": {
+			"frame": { "x": 1, "y": 615, "w": 2816, "h": 1536 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 2816, "h": 1536 },
+			"sourceSize": { "w": 2816, "h": 1536 }
+		},
 		"sword": {
 			"frame": { "x": 1, "y": 1, "w": 1876, "h": 612 },
 			"rotated": false,
@@ -8,23 +15,170 @@
 			"sourceSize": { "w": 1876, "h": 612 }
 		},
 		"player_walk_1": {
-			"frame": { "x": 1879, "y": 1, "w": 472, "h": 844 },
+			"frame": { "x": 2819, "y": 1, "w": 416, "h": 752 },
 			"rotated": false,
 			"trimmed": false,
-			"spriteSourceSize": { "x": 0, "y": 0, "w": 472, "h": 844 },
-			"sourceSize": { "w": 472, "h": 844 }
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
 		},
 		"player_walk_2": {
-			"frame": { "x": 1, "y": 847, "w": 370, "h": 832 },
+			"frame": { "x": 3237, "y": 1, "w": 416, "h": 752 },
 			"rotated": false,
 			"trimmed": false,
-			"spriteSourceSize": { "x": 0, "y": 0, "w": 370, "h": 832 },
-			"sourceSize": { "w": 370, "h": 832 }
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_3": {
+			"frame": { "x": 1, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_4": {
+			"frame": { "x": 419, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_5": {
+			"frame": { "x": 837, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_6": {
+			"frame": { "x": 1255, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_7": {
+			"frame": { "x": 1673, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_8": {
+			"frame": { "x": 2091, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_9": {
+			"frame": { "x": 2509, "y": 3017, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_10": {
+			"frame": { "x": 2819, "y": 755, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_11": {
+			"frame": { "x": 2819, "y": 1509, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_12": {
+			"frame": { "x": 1, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_13": {
+			"frame": { "x": 419, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_14": {
+			"frame": { "x": 837, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_15": {
+			"frame": { "x": 1255, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_16": {
+			"frame": { "x": 1673, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_17": {
+			"frame": { "x": 2091, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_18": {
+			"frame": { "x": 2509, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_19": {
+			"frame": { "x": 2927, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_20": {
+			"frame": { "x": 3237, "y": 755, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_21": {
+			"frame": { "x": 3237, "y": 1509, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
+		},
+		"player_walk_22": {
+			"frame": { "x": 3345, "y": 2263, "w": 416, "h": 752 },
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": { "x": 0, "y": 0, "w": 416, "h": 752 },
+			"sourceSize": { "w": 416, "h": 752 }
 		}
 	},
 	"animations": {
-		"player_walk": ["player_walk_1", "player_walk_2"],
-		"player_idle": ["player_walk_1"],
+		"player_walk": [
+			"player_walk_1", "player_walk_2", "player_walk_3", "player_walk_4",
+			"player_walk_5", "player_walk_6", "player_walk_7", "player_walk_8",
+			"player_walk_9", "player_walk_10", "player_walk_11", "player_walk_12",
+			"player_walk_13", "player_walk_14", "player_walk_15", "player_walk_16",
+			"player_walk_17", "player_walk_18", "player_walk_19", "player_walk_20",
+			"player_walk_21", "player_walk_22"
+		],
+		"player_idle": ["player_walk_11"],
 		"player_jump": ["player_walk_1"],
 		"player_attack": ["player_walk_1"]
 	},
@@ -33,7 +187,7 @@
 		"version": "3.0",
 		"image": "sheet.png",
 		"format": "RGBA8888",
-		"size": { "w": 2352, "h": 1680 },
+		"size": { "w": 3762, "h": 3770 },
 		"scale": 1
 	}
 }

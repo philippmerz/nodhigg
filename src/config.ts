@@ -30,7 +30,7 @@ export const PLAYER = {
 export const SWORD = {
   WIDTH: 90,
   HEIGHT: 15,
-  OFFSET_X: 0,
+  OFFSET_X: -5,
   OFFSET_Y: 50,
   THRUST_EXTENSION: 60,    // How far sword extends on attack
   RETRACT_SPEED: 0.30,     // Extension units per ms (doubled for larger extension)
@@ -52,7 +52,7 @@ export const COLORS = {
   PLAYER_1: 0x3498db, // Blue
   PLAYER_2: 0xe74c3c, // Red
   SWORD: 0xecf0f1,    // White
-  GROUND: 0x27ae60,   // Green
+  GROUND: 0x000000,   // Black
   WALL: 0x95a5a6,     // Gray
 } as const;
 
