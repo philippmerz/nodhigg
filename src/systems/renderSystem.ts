@@ -29,11 +29,6 @@ import type { Entity, AnimationName } from '../types';
 // Animation playback speed (frames per second)
 // Frame duration is used by animationSystem.ts for timing
 
-// Sprite scale factors to match entity collider sizes
-// Scale sprites so their visual size matches the game collider dimensions
-const PLAYER_SCALE = PLAYER.HEIGHT / 844; // Scale player sprite to match PLAYER.HEIGHT
-const SWORD_SCALE = SWORD.WIDTH / 1876;   // Scale sword sprite to match SWORD.WIDTH
-
 // ============================================================================
 // STATE
 // ============================================================================
@@ -209,8 +204,9 @@ function createSpriteForEntity(entity: Entity): Container | null {
     }
     const sprite = new Sprite(texture);
     
-    // Scale sprite to match player collider size
-    sprite.scale.set(PLAYER_SCALE);
+    // Scale sprite to match player collider size (use actual texture height)
+    const playerScale = PLAYER.HEIGHT / texture.height;
+    sprite.scale.set(playerScale);
     
     // Set anchor to bottom-center for proper positioning
     // This makes the sprite's position correspond to the player's feet
@@ -228,8 +224,9 @@ function createSpriteForEntity(entity: Entity): Container | null {
     }
     const sprite = new Sprite(texture);
     
-    // Scale sword to match collider
-    sprite.scale.set(SWORD_SCALE);
+    // Scale sword to match collider (use actual texture width)
+    const swordScale = SWORD.WIDTH / texture.width;
+    sprite.scale.set(swordScale);
     
     // Anchor at left-center for proper rotation point
     sprite.anchor.set(0, 0.5);
