@@ -74,7 +74,7 @@ function gameLoop(currentTime: number) {
       updateAttackSystem(FIXED_TIMESTEP);
 
       // 4. Apply movement and gravity
-      updateMovementSystem(FIXED_TIMESTEP);
+      updateMovementSystem();
 
       // 5. Position swords (held) and apply physics (flying/grounded)
       updateSwordSystem();

@@ -1,7 +1,6 @@
 // Stage System - Handle stage progression checks and transitions
 
 import { queries, world } from '../state/world';
-import { SWORD } from '../config';
 import {
   getStageState,
   canPlayerProgress,

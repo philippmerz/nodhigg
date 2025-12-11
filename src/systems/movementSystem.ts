@@ -16,7 +16,7 @@ export function isGrounded(entityId: string): boolean {
 /**
  * Update movement for all players
  */
-export function updateMovementSystem(deltaTime: number): void {
+export function updateMovementSystem(): void {
   for (const entity of queries.players) {
     if (!entity.position || !entity.velocity || !entity.input || !entity.collider) continue;
 
