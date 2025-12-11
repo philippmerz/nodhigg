@@ -86,7 +86,8 @@ export async function initRenderSystem(): Promise<Application> {
 
 async function loadAssets(): Promise<void> {
   // Load the spritesheet JSON which references sheet.png
-  spritesheet = await Assets.load<Spritesheet>('/assets/sheet.json');
+  // Use import.meta.env.BASE_URL for correct path on GitHub Pages
+  spritesheet = await Assets.load<Spritesheet>(`${import.meta.env.BASE_URL}assets/sheet.json`);
   
   console.log('Spritesheet loaded:', spritesheet);
   console.log('Available textures:', Object.keys(spritesheet.textures));
