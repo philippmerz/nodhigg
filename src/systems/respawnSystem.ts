@@ -20,9 +20,10 @@ export function updateRespawnSystem(deltaTime: number): void {
 
 /**
  * Calculate spawn position and recreate the player entity
+ * Players spawn in the way of the other player's stage succession direction
  */
 function respawnPlayer(entry: RespawnEntry): void {
-  const { playerId, killerPosition, killerFacing } = entry;
+  const { playerId } = entry;
 
   // Find the other player (the killer, if still alive)
   const otherPlayer = Array.from(queries.players).find(p => p.player?.id !== playerId);
@@ -32,33 +33,36 @@ function respawnPlayer(entry: RespawnEntry): void {
   let facingDirection: 1 | -1;
   const spawnY = LEVEL.GROUND_Y - PLAYER.HEIGHT;
 
-  // Use current position of other player if available, otherwise use stored killer position
-  const referenceX = otherPlayer?.position?.x ?? killerPosition?.x;
-  const referenceFacing = otherPlayer?.facing?.direction ?? killerFacing;
+  const otherX = otherPlayer?.position?.x;
 
-  if (referenceX !== undefined && referenceFacing !== undefined) {
-    // Try to spawn in front of the other player
-    const frontX = referenceX + (referenceFacing * RESPAWN.DISTANCE);
+  if (otherX !== undefined) {
+    // Determine the other player's progression direction
+    // P1 progresses right (+1), P2 progresses left (-1)
+    const otherPlayerId = otherPlayer?.player?.id;
+    const otherProgressDirection = otherPlayerId === 1 ? 1 : -1;
 
-    // Check if front position is within bounds
-    if (frontX > 0 && frontX < GAME.WIDTH - PLAYER.WIDTH) {
-      spawnX = frontX;
+    // Spawn in the way of their progression (in front of their goal)
+    const blockingX = otherX + (otherProgressDirection * RESPAWN.DISTANCE);
+
+    // Check if blocking position is within bounds
+    if (blockingX > PLAYER.WIDTH && blockingX < GAME.WIDTH - PLAYER.WIDTH) {
+      spawnX = blockingX;
       // Face towards the other player
-      facingDirection = referenceFacing > 0 ? -1 : 1;
+      facingDirection = otherProgressDirection > 0 ? -1 : 1;
     } else {
-      // Spawn behind if front is out of bounds
-      spawnX = referenceX - (referenceFacing * RESPAWN.DISTANCE);
-      // Face towards the other player
-      facingDirection = referenceFacing;
+      // No space in blocking direction, spawn on the other side
+      spawnX = otherX - (otherProgressDirection * RESPAWN.DISTANCE);
+      // Still face towards the other player
+      facingDirection = otherProgressDirection;
+      
+      // Clamp to bounds
+      spawnX = Math.max(PLAYER.WIDTH, Math.min(spawnX, GAME.WIDTH - PLAYER.WIDTH * 2));
     }
   } else {
-    // Fallback to default spawn positions
+    // Fallback to default spawn positions (no other player found)
     spawnX = playerId === 1 ? PLAYER.SPAWN_P1_X : PLAYER.SPAWN_P2_X;
     facingDirection = playerId === 1 ? 1 : -1;
   }
-
-  // Clamp spawn position to screen bounds
-  spawnX = Math.max(PLAYER.WIDTH, Math.min(spawnX, GAME.WIDTH - PLAYER.WIDTH * 2));
 
   // Create the player entity fresh
   createPlayer(playerId, spawnX, spawnY, facingDirection);
