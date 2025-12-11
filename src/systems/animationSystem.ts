@@ -14,7 +14,7 @@ import { queries } from '../state/world';
 // frameCount: number of frames in the animation (must match sheet.json)
 const ANIMATION_CONFIG: Record<string, { fps: number; frameCount: number }> = {
   idle: { fps: 8, frameCount: 1 },     // Uses player_walk_1 only
-  walk: { fps: 30, frameCount: 22 },   // Uses player_walk_1 through player_walk_22
+  walk: { fps: 50, frameCount: 22 },   // Uses player_walk_1 through player_walk_22
   jump: { fps: 8, frameCount: 1 },     // Uses player_walk_1 (placeholder)
   attack: { fps: 8, frameCount: 1 },   // Uses player_walk_1 (placeholder)
 };

@@ -1,13 +1,13 @@
 // Game Configuration Constants
 
 // Set to true to show red collider boxes for debugging
-export const DEBUG = false;
+export const DEBUG = true;
 
 export const PHYSICS = {
   GRAVITY: 0.5,
   FRICTION: 0.85,
-  JUMP_FORCE: -12,
-  MOVE_SPEED: 5,
+  JUMP_FORCE: -14,
+  MOVE_SPEED: 7,
   MAX_FALL_SPEED: 15,
 } as const;
 
@@ -19,7 +19,7 @@ export const GAME = {
 } as const;
 
 export const PLAYER = {
-  WIDTH: 60,
+  WIDTH: 50,
   HEIGHT: 120,
   get SPAWN_P1_X() { return window.innerWidth * 0.25; }, // 25% from left
   get SPAWN_P2_X() { return window.innerWidth * 0.75; }, // 75% from left
@@ -29,7 +29,7 @@ export const PLAYER = {
 
 export const SWORD = {
   WIDTH: 90,
-  HEIGHT: 15,
+  HEIGHT: 12,
   OFFSET_X: -5,
   OFFSET_Y: 50,
   THRUST_EXTENSION: 60,    // How far sword extends on attack

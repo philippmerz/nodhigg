@@ -16,6 +16,7 @@ import {
   Text,
   Graphics,
   Spritesheet,
+  TilingSprite,
 } from 'pixi.js';
 import { queries } from '../state/world';
 import { GAME, PLAYER, SWORD, STAGE, COLORS } from '../config';
@@ -101,10 +102,18 @@ function createBackgroundSprite(): void {
     return;
   }
   
-  const bgSprite = new Sprite(bgTexture);
-  // Scale background to fill the game area
-  bgSprite.width = GAME.WIDTH;
-  bgSprite.height = GAME.HEIGHT;
+  // Scale based on height only to preserve aspect ratio
+  const scale = GAME.HEIGHT / bgTexture.height;
+  
+  // Use TilingSprite to repeat horizontally if screen is wider than scaled texture
+  const bgSprite = new TilingSprite({
+    texture: bgTexture,
+    width: GAME.WIDTH,
+    height: GAME.HEIGHT,
+  });
+  
+  // Set the tile scale to match the height-based scaling
+  bgSprite.tileScale.set(scale, scale);
   bgSprite.position.set(0, 0);
   
   // Add at the back of gameContainer (index 0)
@@ -233,14 +242,34 @@ function createSpriteForEntity(entity: Entity): Container | null {
     
     sprite.label = 'mainSprite';
     container.addChild(sprite);
+  } else if (entity.id === 'ground' && entity.collider) {
+    // Ground - use tiling sprite that tiles horizontally only
+    const groundTexture = spritesheet.textures['ground'];
+    if (!groundTexture) {
+      console.warn('Ground texture not found in spritesheet');
+      return null;
+    }
+    
+    // Scale based on collider height to fit without stretching vertically
+    const scale = entity.collider.h / groundTexture.height;
+    
+    // Use TilingSprite for horizontal tiling
+    const groundSprite = new TilingSprite({
+      texture: groundTexture,
+      width: entity.collider.w,
+      height: entity.collider.h,
+    });
+    
+    // Set tile scale to match height-based scaling
+    groundSprite.tileScale.set(scale, scale);
+    groundSprite.label = 'mainSprite';
+    container.addChild(groundSprite);
   } else if (entity.collider?.tag === 'wall') {
-    // Level geometry - use colored rectangles (no sprite in sheet)
+    // Other level geometry (walls) - use colored rectangles
     const graphics = new Graphics();
-    const isGround = entity.id === 'ground';
-    const color = isGround ? COLORS.GROUND : COLORS.WALL;
     
     graphics.rect(0, 0, entity.collider.w, entity.collider.h);
-    graphics.fill(color);
+    graphics.fill(COLORS.WALL);
     graphics.label = 'mainSprite';
     container.addChild(graphics);
   }
@@ -310,8 +339,8 @@ function updateSwordSprite(entity: Entity, sprite: Sprite): void {
   if (!container) return;
 
   // Calculate scale based on current collider width (which changes during attack)
-  // Original sword sprite is 1876px wide
-  const currentScale = entity.collider.w / 1876;
+  // Use actual texture width instead of hardcoded constant
+  const currentScale = entity.collider.w / sprite.texture.width;
 
   // Find parent player to determine facing
   if (entity.sword?.parentId) {

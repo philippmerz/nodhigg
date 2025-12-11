@@ -54,7 +54,7 @@ export function updateMovementSystem(deltaTime: number): void {
     entity.position.y += entity.velocity.y;
 
     // Ground collision
-    const groundTop = LEVEL.GROUND_Y;
+    const groundTop = LEVEL.GROUND_Y + LEVEL.GROUND_HEIGHT * 0.2;
     const entityBottom = entity.position.y + entity.collider.h;
 
     if (entityBottom >= groundTop && entity.velocity.y >= 0) {
