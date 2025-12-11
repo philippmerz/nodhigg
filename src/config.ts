@@ -63,7 +63,7 @@ export const LEVEL = {
 
 export const RESPAWN = {
   TIME: 3000, // 3 seconds in ms
-  DISTANCE: 200, // Distance from other player to spawn
+  DISTANCE: PLAYER.WIDTH * 5, // Distance from other player to spawn
 } as const;
 
 export const STAGE = {
